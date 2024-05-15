@@ -1,12 +1,9 @@
 package sg.edu.np.mad.madpractical4;
 
-
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.os.Bundle;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -14,14 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-
-import java.util.Random;
-
 public class MainActivity extends AppCompatActivity {
-
-    private static final String TAG = "MainActivity";
-    private boolean followed = false;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,40 +23,41 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-        // initialise user
-        User user = new User("MAD", "MAD Developer", 1, false);
+        // Initialize a new user object
+        User user = new User("John Doe", "MAD Developer", 1, false);
 
-        // Get textviews and button from the layout
-        TextView tvName = findViewById(R.id.tvName);
-        TextView tvDesc = findViewById(R.id.tvDesc);
-        Button btnFollow = findViewById(R.id.Button1);
+        // Get the TextViews and Button from the layout
+        TextView tvName = findViewById(R.id.textView3);
+        TextView tvDescription = findViewById(R.id.textView2);
+        Button btnFollow = findViewById(R.id.button);
 
-        Random random = new Random();
+        // Set the TextViews with the User's name, description and default button message
+        String name = getIntent().getStringExtra("name");
+        String description = getIntent().getStringExtra("description");
+        boolean followed = getIntent().getBooleanExtra("followed", false);
+        tvName.setText(name);
+        tvDescription.setText(description);
+        if(!followed){
+            btnFollow.setText("Follow");
+        }
+        else{
+            btnFollow.setText("Unfollow");
+        }
 
-        // Generate a random number within the range of 10 digits
-        long max = 9999999999L; // 10^10 - 1
-        long number = random.nextLong() % (max + 1);
-
-        tvName.setText(user.name + " " + number);
-        btnFollow.setText("Follow");
-
-
-        btnFollow.setOnClickListener(new View.OnClickListener(){
+        btnFollow.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v){
-                Log.i(TAG, "follow button pressed");
-
-                // Toggle text and update followed variable
-                if (followed) {
+            public void onClick(View v) {
+                if (user.followed) {
                     btnFollow.setText("Follow");
                     Toast.makeText(MainActivity.this, "Unfollowed", Toast.LENGTH_SHORT).show();
-                } else {
+                    user.followed = false;
+                }
+                else{
                     btnFollow.setText("Unfollow");
                     Toast.makeText(MainActivity.this, "Followed", Toast.LENGTH_SHORT).show();
+                    user.followed = true;
                 }
-                followed = !followed;
             }
         });
-
     }
 }
